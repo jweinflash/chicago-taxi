@@ -42,6 +42,12 @@ dt_trips = process_blocks(laf_obj, count_trips_laf,
 dt_trcts = process_blocks(laf_obj, store_lon_lat_laf,
                           columns = c(7, 8, 18, 19, 21, 22), nrows = 10^6)
 
+# oddly there's a bunch of different "centroid" lon/lats per tract.
+# hmph -> maybe just take the median to be the center.
+dt_trcts = dt_trcts[, .(lon = median(lon, na.rm = TRUE), 
+                        lat = median(lat, na.rm = TRUE)),
+                        by = tract]
+
 # save-to-file ------------------------------------------------------------
 saveRDS(dt_trips, "../data/taxi-trips-clean.rds")
 saveRDS(dt_trcts, "../data/tract-lon-lat-mapping.rds")
