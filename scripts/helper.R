@@ -16,7 +16,6 @@ extract_community_area_data = function(spdf) {
 
   # extract the 'data' and 'polygons' slots from the object
   df_comm = spdf@data
-  v_order = spdf@plotOrder
   l_polys = spdf@polygons
   
   # init list to hold output
@@ -31,7 +30,7 @@ extract_community_area_data = function(spdf) {
                                          # to the first element
     l_dfs[[i]] = data.frame("area_no" = rep(as.character(df_comm$area_numbe)[i], nrow(m_cord)),
                             "area_nm" = rep(as.character(df_comm$community)[i], nrow(m_cord)),
-                            "order" = rep(v_order[i], nrow(m_cord)),
+                            "order" = 1:nrow(m_cord),
                             "lon" = m_cord[, 1],
                             "lat" = m_cord[, 2],
                             stringsAsFactors = FALSE)
