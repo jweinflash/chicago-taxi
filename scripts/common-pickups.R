@@ -75,7 +75,7 @@ ggp_chi = ggp_chi + scale_fill_gradient(name = "Number of pickups",
 ggp_chi = ggp_chi + hrbrthemes::theme_ipsum_rc()
 
 ggp_chi = ggp_chi + labs(x = "", y = "")
-ggp_chi = ggp_chi + labs(title = paste("Does the season affect the most common",
+ggp_chi = ggp_chi + labs(title = paste("Is there a seasonal affect to the most common",
                                        "pickup locations in Chicago?"))
 
 ggp_chi = ggp_chi + labs(subtitle = "Heatmaps shown by quarter for the years 2013 - 2016")
