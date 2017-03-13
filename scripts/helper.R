@@ -1,6 +1,6 @@
-# @Author: Josh Weinflash
-# @Created: 2017-02-28
-# @Purpose: Week 6 Makeover Monday
+# Author: Josh Weinflash
+# Created: 2017-02-28
+# Purpose: Week 6 Makeover Monday
 
 # set-up-environment ------------------------------------------------------
 
@@ -28,11 +28,12 @@ extract_community_area_data = function(spdf) {
     m_cord = p_poly@Polygons[[1]]@coords # oddly, p_poly@Polygons is of type list;
                                          # to access its data members you need to first index 
                                          # to the first element
+    
     l_dfs[[i]] = data.frame("area_no" = rep(as.character(df_comm$area_numbe)[i], nrow(m_cord)),
                             "area_nm" = rep(as.character(df_comm$community)[i], nrow(m_cord)),
-                            "order" = 1:nrow(m_cord),
                             "lon" = m_cord[, 1],
                             "lat" = m_cord[, 2],
+                            "order" = seq_len(nrow(m_cord)),
                             stringsAsFactors = FALSE)
   }
   
@@ -42,8 +43,7 @@ extract_community_area_data = function(spdf) {
 my_sum = function(df) {
   # quick function to add up the counts 
   # belonging to a particular community in a 
-  # particular quarter (the db query returns 
-  # counts by month)
+  # particular quarter (used with ddply)
   #
   # Args:
   #   df: data.frame
@@ -58,3 +58,19 @@ my_sum = function(df) {
   return(df_out)
 }
 
+my_percent = function(df) {
+  # quick function to calculate the percent of traffic
+  # per each community area (used with ddply)
+  #
+  # Args:
+  #   df: data.frame
+  #
+  # Returns: data.frame
+  
+  df_out = data.frame("period" = df$period,
+                      "area_no" = df$area_no,
+                      "percent" = df$count / sum(df$count),
+                      stringsAsFactors = FALSE)
+  
+  return(df_out)
+}
