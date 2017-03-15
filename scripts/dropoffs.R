@@ -1,6 +1,6 @@
 # Author: Josh Weinflash
 # Created: 2017-03-10
-# Purpose: Week 6 Makeover Monday
+# Purpose: Week 6 Makeover Monday -- dropoffs per area, time period
 
 # set-up-environment ------------------------------------------------------
 source("helper.R")
@@ -18,22 +18,23 @@ query = paste('SELECT "Dropoff Community Area" AS area_no,
                AS period,
                COUNT(*) AS count
                FROM (SELECT * FROM taxi LIMIT 1000000)
+               WHERE area_no IS NOT NULL AND period IS NOT NULL
                GROUP BY period, area_no')
 
-df_pick = dbGetQuery(con, query)
+df_drop = dbGetQuery(con, query)
 
 # convert to quarters
-df_pick$period = lubridate::quarter(as.Date(sprintf("%s-01", df_pick$period)), 
+df_drop$period = lubridate::quarter(as.Date(sprintf("%s-01", df_drop$period)), 
                                     with_year = TRUE)
 
 # sum up counts belonging to the same (quarter, community area)
-df_pick = plyr::ddply(df_pick, c("period", "area_no"), my_sum)
+df_drop = plyr::ddply(df_drop, c("period", "area_no"), my_sum)
 
 # calculate percent of traffic in each area per time period
-df_pick = plyr::ddply(df_pick, "period", my_percent)
+df_drop = plyr::ddply(df_drop, "period", my_percent)
 
 # reformat quarters for readability
-df_pick$period = stringr::str_replace(df_pick$period, "\\.", "-Q")
+df_drop$period = stringr::str_replace(df_drop$period, "\\.", "-Q")
 
 # get-community-areas -----------------------------------------------------
 sp_comm = readOGR("../data/", "community-area")
@@ -46,14 +47,14 @@ print(proj4string(sp_comm))
 df_comm = extract_community_area_data(sp_comm)
 
 # merge-count-and-lon-lat-data --------------------------------------------
-df_pick = merge(df_pick, df_comm, by.x = "area_no", by.y = "area_no")
+df_drop = merge(df_drop, df_comm, by.x = "area_no", by.y = "area_no")
 
-df_pick = df_pick[order(df_pick$order), ]
+df_drop = df_drop[order(df_drop$order), ]
 
 # construct-main-plot -----------------------------------------------------
-ggm_chi = get_googlemap("Chicago, Illinois", zoom = 11, maptype = "roadmap")
+ggm_chi = get_googlemap("Chicago, Illinois", zoom = 10, maptype = "roadmap")
 
-ggp_chi = ggmap(ggm_chi, base_layer = ggplot(df_pick, aes_string("lon", "lat")), 
+ggp_chi = ggmap(ggm_chi, base_layer = ggplot(df_drop, aes_string("lon", "lat")), 
                 maprange = TRUE, extent = "device")
 
 ggp_chi = ggp_chi + geom_polygon(aes_string(group = "area_no", fill = "percent"),

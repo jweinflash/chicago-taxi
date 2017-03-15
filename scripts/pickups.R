@@ -1,6 +1,6 @@
 # Author: Josh Weinflash
 # Created: 2017-02-28
-# Purpose: Week 6 Makeover Monday
+# Purpose: Week 6 Makeover Monday -- pickups per area, time period
 
 # set-up-environment ------------------------------------------------------
 source("helper.R")
@@ -18,6 +18,7 @@ query = paste('SELECT "Pickup Community Area" AS area_no,
                AS period,
                COUNT(*) AS count
                FROM (SELECT * FROM taxi LIMIT 1000000)
+               WHERE area_no IS NOT NULL AND period IS NOT NULL
                GROUP BY period, area_no')
 
 df_pick = dbGetQuery(con, query)
@@ -51,7 +52,7 @@ df_pick = merge(df_pick, df_comm, by.x = "area_no", by.y = "area_no")
 df_pick = df_pick[order(df_pick$order), ]
 
 # construct-main-plot -----------------------------------------------------
-ggm_chi = get_googlemap("Chicago, Illinois", zoom = 11, maptype = "roadmap")
+ggm_chi = get_googlemap("Chicago, Illinois", zoom = 10, maptype = "roadmap")
 
 ggp_chi = ggmap(ggm_chi, base_layer = ggplot(df_pick, aes_string("lon", "lat")), 
                 maprange = TRUE, extent = "device")
