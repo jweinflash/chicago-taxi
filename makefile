@@ -10,7 +10,7 @@ plt = plots
 all_dat = $(dat)/taxi.db $(dat)/community-area.dbf $(dat)/community-area.prj \
           $(dat)/community-area.shp $(dat)/community-area.shx
 					 
-all_plt = $(plt)/pickups.png $(plt)/dropoffs.png
+all_plt = $(plt)/pickups.png $(plt)/dropoffs.png $(plt)/evening-dropoffs.png
 
 all: $(all_plt)
 	

@@ -26,3 +26,9 @@ df_drop = dbGetQuery(con, query)
 
 # TODO: convert to weekday\ninterval format
 
+
+
+
+
+
+

@@ -74,3 +74,52 @@ my_percent = function(df) {
   
   return(df_out)
 }
+
+my_percent2 = function(df) {
+  # quick function to calculate the percent of traffic
+  # per each community area (for evening-dropoffs; used
+  # with ddply)
+  #
+  # Args:
+  #   df: data.frame
+  #
+  # Returns: data.frame
+  
+  df_out = data.frame("area_no" = df$area_no,
+                      "evening_type" = df$evening_type,
+                      "time_period" = df$time_period,
+                      "percent" = df$freq / sum(df$freq),
+                      stringsAsFactors = FALSE)
+  
+  return(df_out)
+}
+
+group_hour = function(dt) {
+  # function to group the dropoff times
+  # into three hour groups. Used with apply
+  # family
+  #
+  # Args:
+  #   df: POSIXct 
+  #
+  # Returns: string
+
+  my_hour = lubridate::hour(dt)
+  
+  if (my_hour < 15) {
+    
+    return("12PM - 3PM")
+    
+  } else if (my_hour < 18) {
+    
+    return("3PM - 6PM")
+    
+  } else if (my_hour < 21) {
+    
+    return("6PM - 9PM")
+    
+  } else {
+    
+    return("9PM - 12AM")
+  }
+}
