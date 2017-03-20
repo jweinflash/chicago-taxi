@@ -12,18 +12,19 @@ library("DBI")
 # query-database-for-counts -----------------------------------------------
 con = dbConnect(RSQLite::SQLite(), dbname = "../data/taxi.db")
 
-query = paste('SELECT "Dropoff Community Area" AS area_no,
-               PRINTF("%s %s %s", SUBSTR("Trip End Timestamp", 1, 10),
-                                  SUBSTR("Trip End Timestamp", 12, 2),
-                                  SUBSTR("Trip End Timestamp", -2, 2))
-                      AS time,
-               COUNT(*) AS count
-               FROM (SELECT * FROM taxi LIMIT 100000)
-               WHERE area_no != "" and SUBSTR(time, -2, 2) = "PM"
-               GROUP BY area_no, time')
+query = ('SELECT "Dropoff Community Area" AS area_no,
+          PRINTF("%s %s %s", SUBSTR("Trip End Timestamp", 1, 10),
+                             SUBSTR("Trip End Timestamp", 12, 2),
+                             SUBSTR("Trip End Timestamp", -2, 2))
+          AS time,
+          COUNT(*) AS count
+          FROM (SELECT * FROM taxi LIMIT 1000)
+          WHERE area_no != "" and SUBSTR(time, -2, 2) = "PM"
+          GROUP BY area_no, time')
 
 df_drop = dbGetQuery(con, query)
 
+# normalize ---------------------------------------------------------------
 # convert time to date
 df_drop$time = lubridate::mdy_h(df_drop$time)
 
@@ -78,7 +79,8 @@ ggp_chi = ggp_chi + labs(x = "", y = "")
 ggp_chi = ggp_chi + labs(title = paste("Does the evening time affect the most",
                                        "common dropoff locations in Chicago?"))
 
-ggp_chi = ggp_chi + labs(subtitle = "Heatmaps shown for weekdays and weekends in 3 hour chunks")
+ggp_chi = ggp_chi + labs(subtitle = paste("Heatmaps shown for weekday (Sunday - Thursday) and",
+                                          "weekend (Friday - Saturday) evenings in 3 hour chunks"))
 
 ggp_chi = ggp_chi + theme(legend.position = "bottom")
 ggp_chi = ggp_chi + theme(axis.text = element_blank())

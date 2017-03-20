@@ -12,17 +12,18 @@ library("DBI")
 # query-database-for-counts -----------------------------------------------
 con = dbConnect(RSQLite::SQLite(), dbname = "../data/taxi.db")
 
-query = paste('SELECT "Dropoff Community Area" AS area_no, 
-               PRINTF("%s-%s", SUBSTR("Trip End Timestamp", 7, 4),
-                               SUBSTR("Trip End Timestamp", 1, 2)) 
-               AS period,
-               COUNT(*) AS count
-               FROM (SELECT * FROM taxi LIMIT 100000)
-               WHERE area_no != "" AND period != ""
-               GROUP BY period, area_no')
+query = ('SELECT "Dropoff Community Area" AS area_no, 
+          PRINTF("%s-%s", SUBSTR("Trip End Timestamp", 7, 4),
+                          SUBSTR("Trip End Timestamp", 1, 2)) 
+          AS period,
+          COUNT(*) AS count
+          FROM (SELECT * FROM taxi LIMIT 1000)
+          WHERE area_no != "" AND period != ""
+          GROUP BY period, area_no')
 
 df_drop = dbGetQuery(con, query)
 
+# normalize ---------------------------------------------------------------
 # convert to quarters
 df_drop$period = lubridate::quarter(as.Date(sprintf("%s-01", df_drop$period)), 
                                     with_year = TRUE)
