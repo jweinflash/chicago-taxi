@@ -4,7 +4,8 @@
 
 # set-up-environment ------------------------------------------------------
 
-# define-functions --------------------------------------------------------
+
+# ---- extract-spatial-data -----------------------------------------------
 extract_community_area_data = function(spdf) {
   # function to convert the 'SpatialPolygonsDataFrame'
   # into something useable for ggplot
@@ -40,6 +41,7 @@ extract_community_area_data = function(spdf) {
   return(plyr::rbind.fill(l_dfs))
 }
 
+# ---- misc functions -----------------------------------------------------
 my_sum = function(df) {
   # quick function to add up the counts 
   # belonging to a particular community in a 
