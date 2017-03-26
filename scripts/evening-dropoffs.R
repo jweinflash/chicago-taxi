@@ -63,7 +63,7 @@ ggp_chi = ggmap(ggm_chi, base_layer = ggplot(df_drop, aes_string("lon", "lat")),
                 maprange = TRUE, extent = "device")
 
 ggp_chi = ggp_chi + geom_polygon(aes_string(group = "area_no", fill = "percent"),
-                                 color = "black", alpha = 0.5)
+                                 color = "black", size = 0.2, alpha = 0.5)
 
 ggp_chi = ggp_chi + scale_fill_gradient(name = "Percentage of dropoffs",
                                         labels = scales::percent,
@@ -72,7 +72,7 @@ ggp_chi = ggp_chi + scale_fill_gradient(name = "Percentage of dropoffs",
 
 ggp_chi = ggp_chi + facet_grid("evening_type ~ time_period", switch = "y")
 
-# modifiy-theme-elements --------------------------------------------------
+# modify-theme-elements ---------------------------------------------------
 ggp_chi = ggp_chi + hrbrthemes::theme_ipsum_rc()
 
 ggp_chi = ggp_chi + labs(x = "", y = "")

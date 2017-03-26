@@ -54,3 +54,15 @@ print(str(sp_comm, list.len = 2))
 df_comm = extract_community_area_data(sp_comm)
 
 print(head(df_comm))
+
+# ---- str-reminder-md ----------------------------------------------------
+print(head(df_pick)); print(head(df_comm))
+
+# ---- merge-md -----------------------------------------------------------
+# merge the two data.frames
+df_pick = merge(df_pick, df_comm, by.x = "area_no", by.y = "area_no")
+
+# order it by `order` so when we facet the polygons are drawn correctly
+df_pick = df_pick[order(df_pick$order), ]
+
+print(head(df_pick))
