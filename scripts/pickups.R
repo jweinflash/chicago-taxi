@@ -28,7 +28,7 @@ df_pick = dbGetQuery(con, query)
 df_pick$period = lubridate::quarter(as.Date(sprintf("%s-01", df_pick$period)), 
                                     with_year = TRUE)
 
-# sum up counts belonging to the same (quarter, community area)
+# sum up counts now belonging to the same (quarter, community area)
 df_pick = plyr::ddply(df_pick, c("period", "area_no"), my_sum)
 
 # convert counts to percent
