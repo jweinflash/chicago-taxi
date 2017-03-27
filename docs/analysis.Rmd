@@ -4,26 +4,18 @@ output: github_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+# load libraries + source for chunks that reference them
 library("DBI")
 library("rgdal")
 source("../scripts/helper.R")
-```
-
-```{r read-md-helper, include=FALSE}
+# load code chunks
 knitr::read_chunk("analysis-helper.R")
-```
-
-```{r read-pickups, include=FALSE}
 knitr::read_chunk("../scripts/pickups.R")
-```
-
-```{r read-helper, include=FALSE}
 knitr::read_chunk("../scripts/helper.R")
 ```
 
 # Processing 105 million taxi trips and visualizing it with ggmap
 [![Evening dropoffs][evening-dropoffs-small-png]][evening-dropoffs-png]
-
 
 [Andy][andy-link] and his team had an interesting challenge for [week 6 of Makeover Monday][week-6-link]. The goal was to create a visualization that showed how Chicagoans use taxis to get around the city. The challenge to me was particularly interesting because it (1) involved a large amount of data (~42GB of trip records), requiring us to be a bit careful with how we approach it, and (2) is inherently spatial in nature. I'd been meaning to play with `R`'s [ggmap][ggmap-link] package for a while now for just this sort of thing, so I thought this would be a great chance to try it out.
 
@@ -36,7 +28,6 @@ In what follows is a tutorial for using `ggmap` (plus a bit of `RSQLite` and `rg
 - [B. Loading the spatial data](#loading-the-spatial-data)  
 - [C. Merging the count and spatial data](#merging-the-count-and-spatial-data)  
 - [D. Building the plot](#building-the-plot)
-
 
 ## Introduction
 ### General precursory thoughts for handling a dataset of this size
@@ -128,7 +119,7 @@ Once the data is organized properly, it's pretty easy to build the visual we're 
   3. Draw `geom_polygons` for each community area, filling them with the percentage of pickups they account for using `scale_fill_gradient`, and  
   4. `facet_wrap` on `period` to show this visualization per quarter
 
-```{r, construct-main-plot, eval=FALSE}
+```{r, construct-main-plot, eval=FALSE} 
 ```
 
 From here, I modify a few aesthetics to get things looking a bit sharper. Kudos to [hrbrmstr][hrbrmstr-link] for developing the [hrbrthemes package][hrbrmstr-themes-link]. I use its `theme_impsum_rc` theme to get a nice clean look.
@@ -138,7 +129,7 @@ From here, I modify a few aesthetics to get things looking a bit sharper. Kudos 
 
 The image below shows the plot over the first four facets of data. Click it to see the full image, with facets for every period. Looking at the image, we don't see taxi pickup patterns changing too much -- they seem to cluster in the "LOOP" community and its surrounding area, regardless of whether the weather is warm or cold. 
 
-[![Community areas with most pickups][pickups-small-png]][pickups-png]
+[![Community areas with most pickups][pickups-small-png]][pickups-small-png]
 
 We can play the same game to see the areas that are the most common for dropoffs each quarter. 
 
@@ -147,7 +138,6 @@ We can play the same game to see the areas that are the most common for dropoffs
 Or do it see the dropoffs that are most common in the evenings, weekdays versus weekends.
 
 [![Community areas with most evening dropoffs][evening-dropoffs-small-png]][evening-dropoffs-png]
-
 
 [pickups-r-link]: ../scripts/pickups.R
 [andy-link]: https://twitter.com/VizWizBI?lang=en
@@ -165,6 +155,6 @@ Or do it see the dropoffs that are most common in the evenings, weekdays versus 
 [dropoffs-png]: ../plots/dropoffs.png
 [evening-dropoffs-png]: ../plots/evening-dropoffs.png
 
-[pickups-small-png]: ../plots/pickups-small.png
-[dropoffs-small-png]: ../plots/dropoffs-small.png
-[evening-dropoffs-small-png]: ../plots/evening-dropoffs-small.png
+[pickups-small-png]: ../crop/pickups-small.png
+[dropoffs-small-png]: ../crop/dropoffs-small.png
+[evening-dropoffs-small-png]: ../crop/evening-dropoffs-small.png
