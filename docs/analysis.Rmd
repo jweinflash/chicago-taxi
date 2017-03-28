@@ -19,9 +19,9 @@ knitr::read_chunk("../scripts/helper.R")
 
 [Andy][andy-link] and his team had an interesting challenge for [week 6 of Makeover Monday][week-6-link]. The goal was to create a visualization that showed how Chicagoans use taxis to get around the city. The challenge to me was particularly interesting because it (1) involved a large amount of data (~42GB of trip records), requiring us to be a bit careful with how we approach it, and (2) is inherently spatial in nature. I'd been meaning to play with `R`'s [ggmap][ggmap-link] package for a while now for just this sort of thing, so I thought this would be a great chance to try it out.
 
-In what follows is a tutorial for using `ggmap` (plus a bit of `RSQLite` and `rgdal`) to spatially visualize data.
+What follows is a tutorial for using `ggmap` (plus a bit of `RSQLite` and `rgdal`) to spatially visualize data.
 
-[Link to R script used for this analysis][pickups-r-link]
+[Primary R script used for this analysis][pickups-r-link]
 
 - [Introduction](#introduction)  
 - [A. Querying the count data](#querying-the-count-data)  

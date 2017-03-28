@@ -18,7 +18,7 @@ query = ('SELECT "Dropoff Community Area" AS area_no,
                              SUBSTR("Trip End Timestamp", -2, 2))
           AS time,
           COUNT(*) AS count
-          FROM (SELECT * FROM taxi LIMIT 1000)
+          FROM taxi
           WHERE area_no != "" and SUBSTR(time, -2, 2) = "PM"
           GROUP BY area_no, time')
 
