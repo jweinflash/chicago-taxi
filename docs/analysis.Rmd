@@ -31,7 +31,7 @@ What follows is a tutorial for using `ggmap` (plus a bit of `RSQLite` and `rgdal
 
 ## Introduction
 ### General precursory thoughts for handling a dataset of this size
-The first thing to realize about working with a dataset this big is that we don't need to load *all of it* (i.e. every record) for the analysis we're interested in doing. Rather, we just need some subset or aggregation of it. This is good, because the subset / aggregation we're interested in is likely (or more likely, at least) to fit into memory, which gives us a chance to analyze it with our usual tools. To me, the most natural thing to do in this situation is to import the data into a database, like [SQLite][sqlite-link]. Once there, we can execute queries for the particular subset / aggregation we need, and then boom, we're off to the races. There are a lot of nice tutorials about initializing the database (e.g. item 8 in the SQLite link above) and interacting with it from `R` (like [Hadley Wickham's tutorial][hadley-sqlite]), so I'm not going to spend much time working through these things in this post.
+The first thing to realize about working with a dataset this big is that we don't need to load *all of it* (i.e. every record) for the analysis we're interested in doing. Rather, we just need some subset or aggregation of it. This is good, because the subset / aggregation we're interested in is likely (or more likely, at least) to fit into memory, which gives us a chance to analyze it with our usual tools. To me, the most natural thing to do in this situation is to import the data into a database, like [SQLite][sqlite-link]. Once there, we can execute queries for the particular subset / aggregation we need, and then boom, we're off to the races. There are a lot of nice tutorials about initializing the database (e.g. item 8 in the SQLite link above) and interacting with it from `R` (like [Hadley Wickham's tutorial][hadley-sqlite]), so I'm not going to spend much time working through these things here.
 
 ### Getting acquainted with the data
 [The dataset that we'll be working with][taxi-data-link] is essentially a logfile of taxi trips. Each record holds information about a single trip, and contains fields like the pickup time, pickup area, dropoff time, dropoff area, total fare, and so on. Below are the first five rows and a few columns of the data to give you a sense of its structure.
@@ -40,7 +40,7 @@ The first thing to realize about working with a dataset this big is that we don'
 ```
 
 ### Answering a particular question: what are the most common pickup locations in Chicago?
-One angle that I was interested in exploring was to see which locations are the most popular for taxi pickups. Since the city has such cold winters, I was also curious about whether these locations remain the most popular throughout the seasons. We'll build up a visualization with `ggmap` and `ggplot2` to answer this. 
+One angle that I was interested in exploring was to see which locations are the most popular for taxi pickups. Since the city has such cold winters, I was also curious about whether these locations remain the most popular throughout the seasons. We'll build up a visualization with `ggmap` and to answer this. 
 
 ## <a name="querying-the-count-data"/> A. Querying the count data </a>
 Querying the data for this is pretty simple to do. We just need to get the `COUNT` of pickups per `Pickup Community Area`, per say each quarter, so that we can study the trend over time. SQL's `GROUP BY` makes this easy to do:
@@ -53,7 +53,7 @@ Querying the data for this is pretty simple to do. We just need to get the `COUN
 ```{r sample-of-monthly-counts-md, echo=FALSE, cache=TRUE}
 ```
 
-Converting to quarter-based counts is pretty easy to do -- we just replace each `YYYY-MM` date with a `YYYY-Q` date and sum up the counts belonging to the same period. I do this with the below code (which note also converts the quarter based counts to percentages).
+Converting to quarter-based counts is pretty easy to do -- we just replace each `YYYY-MM` date with a `YYYY-Q` date and sum up the counts that now belong to the same period. I do this with the below code (which note also converts the quarter based counts to percentages).
 
 ```{r normalize, eval=FALSE}
 ```
@@ -64,7 +64,7 @@ At this point, our data is structured like the small subset below. Each record r
 ```
 
 ## <a name="loading-the-spatial-data"/> B. Loading the spatial data </a>
-Spatial information for the [city of Chicago can be downloaded here][spatial-data-link] (be sure to download it as a `shapefile`). Before we get into the details of this data, just know that it contains boundary information for each of the `Pickup Community Areas` we selected in our query. This boundary information is important; we'll need it to outline each of the communities in our map.
+Spatial information for the city of Chicago [can be downloaded here][spatial-data-link] (be sure to download it as a `shapefile`). Before we get into the details of this data, just know that it contains boundary information for each of the `Pickup Community Areas` we selected in our query. This boundary information is important; we'll need it to outline each of the communities on our map.
 
 The `shapefile` that we downloaded isn't actually a single file, but a zip containing four files: a `.shp`, `.shx`, `.dbf` and `.prj`. The `.shp` is the most important, as it contains the actual "geometry" (outline) of the communities. The others aren't as important, but if you're interested, you can see the [Wikipedia page][shp-wiki-link] for details on the file structure.
 
@@ -79,10 +79,10 @@ The data that we loaded looks a bit nasty at first glance:
 
 But it actually has a fairly reasonable structure. We'll make use of two slots from this object:  
 
-  1. **The `data` slot**. It's of class `data.frame` and holds information about each community's geographic information, like its `shape_area` and `shape_len`. Note it has 77 rows, one for each community.
+  1. **The `data` slot**. It's of class `data.frame` and holds information about each community's geography, like its `shape_area` and `shape_len`. Note it has 77 rows, one for each community.
   2. **The `polygons` slot**. It's of class `list` and holds `Polygon` objects. Each `Polygon` contains a `coords` matrix that lists the (longitude, latitude) pairs that trace its boundary. Note that there are 77 of these as well; this is the case because each one corresponds to a community from `data`. They match in terms of offset, so the first community in `data` maps to the first `Polygon`, the second community to the second `Polygon`, and so forth.
   
-We need to extract the `coords` information from each `Polygon` and link it to the community it represents so that we can draw them properly on our map. I do this with the `extract_community_area_data` function below. It works by iterating over each row in `data` and each `Polygon` in the `polygons` list and storing the `coords` information in an organized `data.frame`. This is important, because we need this data to be structured in a useable form for when we incorporate it with the "count" data we queried in part A.
+We need to extract the `coords` information from each `Polygon` and link it to the community it represents so that we can draw them properly on our map. I do this with the `extract_community_area_data` function below. It works by iterating over each row in `data` and each `Polygon` in the `polygons` list and storing the `coords` information in an organized `data.frame`. This is important, because we need this data to be structured in a useable form for when we incorporate it with the "count" data we queried in step A.
 
 ```{r extract-spatial-data, eval=FALSE}
 ```
@@ -93,9 +93,9 @@ Running this function on `sp_comm` gives us the following output:
 ```
 This object lists the (longitude, latitude) pairs that trace each community area. Note also that there is an `order` column, which specifies the order in which the points need to be "drawn" so that they properly outline the community area on a map.  
 
-Ok, we now have the spatial data we need, in a form that'll be easy to integrate with the count data that we queried in step one.
+Ok, we now have the spatial data we need, in a form that'll be easy to integrate with the count data that we queried in A.
 
-**Note:** I think it's important to understand the structure of the object returned from `readOGR`. If you're not interested in toying with this and are looking for a shortcut, look into ``ggplot`'s `fortify` function. It will return a `data.frame` that's pretty similar to what we get from `extract_community_area_data`.
+**Note:** I think it's important to understand the structure of the object returned from `readOGR`. If you're not interested in toying with this and are looking for a shortcut, look into `ggplot`'s `fortify` function. It will return a `data.frame` that's pretty similar to what we get from `extract_community_area_data`.
 
 ## <a name="merging-the-count-and-spatial-data"/> C. Merging the count and spatial data </a>
 So far, we've constructed two data frames: `df_pick` which lists the number of taxi pickups per community area and period of time, and `df_comm`, which lists the longitude and latitude coordinates that enclose each community area. See below for a reminder on how these are structured.
@@ -116,22 +116,22 @@ Each of the records in `df_pick` has now been "duplicated" c(i) times, where c(i
 Once the data is organized properly, it's pretty easy to build the visual we're looking for. We first    
   1. Pull-in a map of Chicago using `ggmap`'s `get_googlemap` function call   
   2. Convert this to a `ggplot` object using the `ggmap::ggmap` function, setting our data to the `base_layer` in the process   
-  3. Draw `geom_polygons` for each community area, filling them with the percentage of pickups they account for using `scale_fill_gradient`, and  
-  4. `facet_wrap` on `period` to show this visualization per quarter
+  3. Draw `geom_polygons` for each community area, filling them with the percentage of pickups they account with the help of `scale_fill_gradient`, and  
+  4. `facet_wrap`ing on `period` to show this visualization per quarter
 
 ```{r, construct-main-plot, eval=FALSE} 
 ```
 
-From here, I modify a few aesthetics to get things looking a bit sharper. Kudos to [hrbrmstr][hrbrmstr-link] for developing the [hrbrthemes package][hrbrmstr-themes-link]. I use its `theme_impsum_rc` theme to get a nice clean look.
+From here, I modify a few aesthetics to get things looking a bit sharper. Kudos to [hrbrmstr][hrbrmstr-link] for developing the [hrbrthemes package][hrbrmstr-themes-link]; I use its `theme_impsum_rc` theme to get a nice clean look.
 
 ```{r modify-theme-elements, eval=FALSE}
 ```
 
-The image below shows the plot over the first four facets of data. Click it to see the full image, with facets for every period. Looking at the image, we don't see taxi pickup patterns changing too much -- they seem to cluster in the "LOOP" community and its surrounding area, regardless of whether the weather is warm or cold. 
+The image below shows the plot over the first four facets of data. Click it to see the full image, with facets for every period. Looking at the image, we don't see taxi pickup patterns changing too much -- they seem to cluster in the "LOOP" community and its surrounding area, regardless of the time period. 
 
 [![Community areas with most pickups][pickups-small-png]][pickups-small-png]
 
-We can play the same game to see the areas that are the most common for dropoffs each quarter. 
+We can run essentially the same analysis to see the areas that are the most common for dropoffs each quarter. 
 
 [![Community areas with most dropoffs][dropoffs-small-png]][dropoffs-png]
 
