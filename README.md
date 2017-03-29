@@ -2,13 +2,13 @@
 Processing 105 million taxi trips and visualizing it with ggmap
 ===============================================================
 
-[![Evening dropoffs](../crop/evening-dropoffs-small.png)](../plots/evening-dropoffs.png)
+[![Evening dropoffs](crop/evening-dropoffs-small.png)](plots/evening-dropoffs.png)
 
 [Andy](https://twitter.com/VizWizBI?lang=en) and his team had an interesting challenge for [week 6 of Makeover Monday](https://trimydata.com/2017/02/07/makeover-monday-week-6-2017-inside-chicagos-taxi-data/). The goal was to create a visualization that showed how Chicagoans use taxis to get around the city. The challenge to me was particularly interesting because it (1) involved a large amount of data (~42GB of trip records), requiring us to be a bit careful with how we approach it, and (2) is inherently spatial in nature. I'd been meaning to play with `R`'s [ggmap](https://github.com/dkahle/ggmap) package for a while now for just this sort of thing, so I thought this would be a great chance to try it out.
 
 What follows is a tutorial for using `ggmap` (plus a bit of `RSQLite` and `rgdal`) to spatially visualize data.
 
-[Primary R script used for this analysis](../scripts/pickups.R)
+[Primary R script used for this analysis](scripts/pickups.R)
 
 -   [Introduction](#introduction)
 -   [A. Querying the count data](#querying-the-count-data)
@@ -105,7 +105,7 @@ The `shapefile` that we downloaded isn't actually a single file, but a zip conta
 We can load the spatial data into `R` using the `readOGR` function from the `rgdal` package.
 
 ``` r
-sp_comm = readOGR("../data/", "community-area")
+sp_comm = readOGR("data/", "community-area")
 ```
 
 The data that we loaded looks a bit nasty at first glance:
@@ -300,12 +300,12 @@ ggp_chi = ggp_chi + theme(panel.border = element_rect(color = "black", fill = NA
 
 The image below shows the plot over the first few facets of data. Click it to see the full image, with facets for every period. Looking at the image, we don't see taxi pickup patterns changing too much -- they seem to cluster in the "LOOP" community and its surrounding area, regardless of the season (and hence if it's warm or cold). Hmph! Looks like folks in Chicago don't change their patterns as much as I thought, considering the weather they see. Not what I would've thought.
 
-[![Community areas with most pickups](../crop/pickups-small.png)](../crop/pickups-small.png)
+[![Community areas with most pickups](crop/pickups-small.png)](crop/pickups-small.png)
 
 We can play the same game (making small modifications to our query) to see the areas that are the most common for dropoffs each quarter.
 
-[![Community areas with most dropoffs](../crop/dropoffs-small.png)](../plots/dropoffs.png)
+[![Community areas with most dropoffs](crop/dropoffs-small.png)](plots/dropoffs.png)
 
 Or do it to see the dropoffs that are most common in the evenings, weekdays versus weekends.
 
-[![Community areas with most evening dropoffs](../crop/evening-dropoffs-small.png)](../plots/evening-dropoffs.png)
+[![Community areas with most evening dropoffs](crop/evening-dropoffs-small.png)](plots/evening-dropoffs.png)
