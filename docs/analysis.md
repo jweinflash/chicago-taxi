@@ -302,10 +302,10 @@ The image below shows the plot over the first few facets of data. Click it to se
 
 [![Community areas with most pickups](../crop/pickups-small.png)](../crop/pickups-small.png)
 
-We can play the same game (making small modifications to our query) to see the areas that are the most common for dropoffs each quarter..
+We can play the same game (making small modifications to our query) to see the areas that are the most common for dropoffs each quarter.
 
 [![Community areas with most dropoffs](../crop/dropoffs-small.png)](../plots/dropoffs.png)
 
-..Or do it see the dropoffs that are most common in the evenings, weekdays versus weekends.
+Or do it to see the dropoffs that are most common in the evenings, weekdays versus weekends.
 
 [![Community areas with most evening dropoffs](../crop/evening-dropoffs-small.png)](../plots/evening-dropoffs.png)
