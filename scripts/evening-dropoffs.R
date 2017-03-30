@@ -25,7 +25,7 @@ query = ('SELECT "Dropoff Community Area" AS area_no,
 df_drop = dbGetQuery(con, query)
 
 # normalize ---------------------------------------------------------------
-# convert time to date
+# convert text to datetime
 df_drop$time = lubridate::mdy_h(df_drop$time)
 
 # add column indicating weekday or weekend
@@ -35,8 +35,8 @@ df_drop$evening_type = ifelse(lubridate::wday(df_drop$time) < 6,
 # add column for hour grouping
 df_drop$time_period = sapply(df_drop$time, group_hour, USE.NAMES = FALSE)
 
-# count number of trips by weekday/weekend, time period, community area
-df_drop = plyr::count(df_drop, vars = c("area_no", "evening_type", "time_period"))
+# count number of trips by area_no, evening_type, time_period
+df_drop = plyr::ddply(df_drop, c("area_no", "evening_type", "time_period"), my_sum2)
 
 # normalize counts to show percentage
 df_drop = plyr::ddply(df_drop, c("evening_type", "time_period"), my_percent2)

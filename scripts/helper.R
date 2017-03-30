@@ -60,6 +60,26 @@ my_sum = function(df) {
   return(df_out)
 }
 
+my_sum2 = function(df) {
+  # quick function to add up the counts
+  # belonging to a particular community for
+  # a particular evening type and time
+  # period
+  #
+  # Args:
+  #   df: data.frame
+  #
+  # Returns: data.frame
+
+  df_out = data.frame("area_no" = df$area_no[1],
+                      "evening_type" = df$evening_type[1],
+                      "time_period" = df$time_period[1],
+                      "count" = sum(df$count),
+                      stringsAsFactors = FALSE)
+  
+  return(df_out)
+}
+
 my_percent = function(df) {
   # quick function to calculate the percent of traffic
   # per each community area (used with ddply)
@@ -90,7 +110,7 @@ my_percent2 = function(df) {
   df_out = data.frame("area_no" = df$area_no,
                       "evening_type" = df$evening_type,
                       "time_period" = df$time_period,
-                      "percent" = df$freq / sum(df$freq),
+                      "percent" = df$count / sum(df$count),
                       stringsAsFactors = FALSE)
   
   return(df_out)
