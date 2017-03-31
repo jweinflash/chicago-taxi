@@ -68,7 +68,7 @@ df_pick = dbGetQuery(con, query)
     ## 5       3 2013-01     3
     ## 6      31 2013-01     1
 
-Converting to quarter-based counts is pretty easy to do -- we just replace each `YYYY-MM` date with a `YYYY-Q` date and sum up the counts belonging to the same period. I do this with the below code (which note also converts the quarter based counts to percentages).
+Converting to quarter-based counts is pretty easy to do -- we just replace each `YYYY-MM` date with a `YYYY-Q` date and sum up the counts that now belong to the same period. I do this with the below code (which note also converts the quarter based counts to percentages). Nothing fancy going on here, just adding things up.
 
 ``` r
 # convert to quarters
@@ -310,4 +310,6 @@ Or do it to see the dropoffs that are most common in the evenings, weekdays vers
 
 [![Community areas with most evening dropoffs](plots/evening-dropoffs.png)](plots/evening-dropoffs.png)
 
-If you'd like to try anything yourself, feel free to clone the repository. The `shapefile` for the community areas and a sample of the trip data (`sample.csv`) can both be found in the `data/` folder. You'll have to modify your "query" slightly since you would no longer be pulling from a database, but it shouldn't take much to get up and running ( `sqldf`'s `read.csv.sql` function would be helpful here). Hope you find it useful!
+We again don't see much changing here -- it looks like the popular areas in Chicago *remain* popular, regardless of when we look at the taxi trips coming / going.
+
+If you'd like to try anything yourself, feel free to clone the repository. A sample of the data (listed as `sample.csv` plus the `shapefile` for the community areas can be found in the `data/` folder. You'll have to modify your "query" slightly since you would no longer be pulling from a database, but it shouldn't take much to get up and running ( `sqldf`'s `read.csv.sql` function should be helpful here). Hope you find it useful!
