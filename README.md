@@ -2,7 +2,7 @@
 Processing 105 million taxi trips and visualizing it with ggmap
 ===============================================================
 
-[![Evening dropoffs](crop/evening-dropoffs-small.png)](plots/evening-dropoffs.png)
+[![Evening dropoffs](plots/evening-dropoffs.png)](plots/evening-dropoffs.png)
 
 [Andy](https://twitter.com/VizWizBI?lang=en) and his team had an interesting challenge for [week 6 of Makeover Monday](https://trimydata.com/2017/02/07/makeover-monday-week-6-2017-inside-chicagos-taxi-data/). The goal was to create a visualization that showed how Chicagoans use taxis to get around the city. The challenge to me was particularly interesting because it (1) involved a large amount of data (~42GB of trip records), requiring us to be a bit careful with how we approach it, and (2) is inherently spatial in nature. I'd been meaning to play with `R`'s [ggmap](https://github.com/dkahle/ggmap) package for a while now for just this sort of thing, so I thought this would be a great chance to try it out.
 
@@ -51,7 +51,7 @@ query = ('SELECT "Pickup Community Area" AS area_no,
                           SUBSTR("Trip Start Timestamp", 1, 2))
           AS period,
           COUNT(*) AS count
-          FROM taxi
+          FROM (SELECT * FROM taxi LIMIT 1000)
           WHERE area_no != "" AND period != ""
           GROUP BY period, area_no')
 
@@ -153,7 +153,7 @@ extract_community_area_data = function(spdf) {
   # into something useable for ggplot
   #
   # Args:
-  #   spdf: SpatialPolygonsDataFrame (objected retunred from readOGR)
+  #   spdf: SpatialPolygonsDataFrame (objected returned from readOGR)
   #
   # Returns: data.frame
 
@@ -308,4 +308,6 @@ We can play the same game (making small modifications to our query) to see the a
 
 Or do it to see the dropoffs that are most common in the evenings, weekdays versus weekends.
 
-[![Community areas with most evening dropoffs](crop/evening-dropoffs-small.png)](plots/evening-dropoffs.png)
+[![Community areas with most evening dropoffs](plots/evening-dropoffs.png)](plots/evening-dropoffs.png)
+
+If you'd like to try anything yourself, feel free to clone the repository. The `shapefile` for the community areas and a sample of the trip data (`sample.csv`) can both be found in the `data/` folder. You'll have to modify your "query" slightly since you would no longer be pulling from a database, but it shouldn't take much to get up and running ( `sqldf`'s `read.csv.sql` function would be helpful here). Hope you find it useful!

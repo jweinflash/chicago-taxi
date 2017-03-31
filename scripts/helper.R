@@ -4,14 +4,13 @@
 
 # set-up-environment ------------------------------------------------------
 
-
 # ---- extract-spatial-data -----------------------------------------------
 extract_community_area_data = function(spdf) {
   # function to convert the 'SpatialPolygonsDataFrame'
   # into something useable for ggplot
   #
   # Args:
-  #   spdf: SpatialPolygonsDataFrame (objected retunred from readOGR)
+  #   spdf: SpatialPolygonsDataFrame (objected returned from readOGR)
   #
   # Returns: data.frame
 
